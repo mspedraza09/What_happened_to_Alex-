@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://c5e5accynjjip"]
+
+[ext_resource type="PackedScene" uid="uid://d4hjcii6t2lsv" path="res://basePantalla.tscn" id="1_3d8b1"]
+[ext_resource type="Script" uid="uid://r6jsbvr8h22n" path="res://patalla.gd" id="1_lvsnw"]
+[ext_resource type="PackedScene" uid="uid://bgc544lnd1hqe" path="res://chat_items.tscn" id="2_3d8b1"]
+
+[sub_resource type="GDScript" id="GDScript_3d8b1"]
+script/source = "extends \"res://chat_items.gd\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="Patalla" type="Control" unique_id=431145588]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 654.0
+mouse_filter = 1
+script = ExtResource("1_lvsnw")
+
+[node name="AppMensaje" type="Control" parent="." unique_id=47658621]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+
+[node name="TextureRect" parent="AppMensaje" unique_id=1821301794 instance=ExtResource("1_3d8b1")]
+layout_mode = 0
+anchors_preset = 0
+offset_left = 177.0
+offset_top = -64.0
+offset_right = 1091.0
+offset_bottom = 737.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="AppMensaje" unique_id=1097915871]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.05
+offset_left = 478.0
+offset_top = 149.0
+offset_right = 788.0
+offset_bottom = 602.0
+mouse_filter = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AppMensaje/ScrollContainer" unique_id=1312147941]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChatItems" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=1100462159 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+script = SubResource("GDScript_3d8b1")
+nombre_usuario = "Anny"
+
+[node name="ChatItems2" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=49874408 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "Felipe"
+
+[node name="ChatItems3" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=1596616963 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "María"
+
+[node name="ChatItems4" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=507637243 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "Laura"
+
+[node name="ChatItems5" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=286310397 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+nombre_usuario = "Juan"
+
+[node name="ChatItems6" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=1624133346 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "Sofía"
+
+[node name="ChatItems7" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=421940711 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "Sofía"
+
+[node name="ChatItems8" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=719487362 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "Sofía"
+
+[node name="ChatItems9" parent="AppMensaje/ScrollContainer/VBoxContainer" unique_id=1761482454 instance=ExtResource("2_3d8b1")]
+layout_mode = 2
+mouse_filter = 1
+nombre_usuario = "Sofía"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=836657223]
+position = Vector2(592, 339)
