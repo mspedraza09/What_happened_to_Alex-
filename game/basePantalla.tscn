@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://d4hjcii6t2lsv"]
+
+[ext_resource type="Texture2D" uid="uid://c3kujlht4du6u" path="res://sprites/Telefono_01-removebg-preview.png" id="1_faa35"]
+
+[node name="TextureRect" type="TextureRect" unique_id=1821301794]
+anchors_preset = -1
+offset_left = 176.0
+offset_top = -55.0
+offset_right = 1090.0
+offset_bottom = 746.0
+texture = ExtResource("1_faa35")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=379009876]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.143
+anchor_top = 0.071
+anchor_right = -0.143
+anchor_bottom = 0.071
+offset_left = 429.70203
+offset_top = 82.129
+offset_right = 746.702
+offset_bottom = 122.129
+
+[node name="Label" type="Label" parent="PanelContainer" unique_id=1736057103]
+layout_mode = 2
+text = "WhatsApp"
