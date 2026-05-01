@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bgc544lnd1hqe"]
 
-[ext_resource type="Script" uid="uid://b2n7r3vyru52j" path="res://game/scripts/apps/chat_items.gd" id="1_5m0tk"]
+[ext_resource type="Script" uid="uid://b2n7r3vyru52j" path="res://chat_items.gd" id="1_5m0tk"]
 [ext_resource type="Texture2D" uid="uid://yw8m315prkxj" path="res://#Featured #App.jpeg" id="1_ewdid"]
 
 [node name="ChatItems" type="Control" unique_id=1100462159]

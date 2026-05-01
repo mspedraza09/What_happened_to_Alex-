@@ -75,3 +75,23 @@ func to_map() -> HashMap:
 func to_string() -> String:
 	var s := "OK" if _solved else "(%d intentos)" % _attempts
 	return "Puzzle(%s, %s)" % [_puzzle_id, s]
+
+func restore(saved_attempts: int, saved_solved: bool) -> void:
+    """
+    Restaura el estado del puzzle desde un guardado.
+    Solo llamado por PersistenceManager — no usar en otro contexto.
+    """
+    _attempts = saved_attempts
+    _solved   = saved_solved
+
+# ── Métodos de restauración (usados por PersistenceManager) ──
+
+func restore_solved(attempts: int) -> void:
+	# Restaura el puzzle como resuelto con los intentos guardados
+	_attempts = attempts
+	_solved   = true
+
+func restore_attempts(attempts: int) -> void:
+	# Restaura los intentos sin marcar como resuelto
+	_attempts = attempts
+	_solved   = false

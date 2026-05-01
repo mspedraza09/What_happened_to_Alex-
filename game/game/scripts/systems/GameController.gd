@@ -275,3 +275,153 @@ func subscribe(event_name: String, callable: Callable) -> void:
 
 func unsubscribe(event_name: String, callable: Callable) -> void:
 	bus.unsubscribe(event_name, callable)
+
+
+# ════════════════════════════════════════════════════════════
+# PERSISTENCIA — guardar y cargar partida
+# ════════════════════════════════════════════════════════════
+
+func save_game() -> bool:
+    """
+    Guarda el progreso actual en disco.
+    Llamar despues de cada accion importante del jugador.
+    Retorna true si el guardado fue exitoso.
+    """
+    var ok := PersistenceManager.save_game(state)
+    if ok:
+        _pub("game_saved", {"stage": state.get_stage()})
+    else:
+        _pub("save_failed", {})
+    return ok
+
+func load_game() -> bool:
+    """
+    Carga el progreso guardado y restaura el GameState.
+    Llamar al inicio del juego si existe un guardado.
+    Retorna true si la carga fue exitosa.
+    """
+    var ok := PersistenceManager.load_game(state)
+    if ok:
+        _pub("game_loaded", {"stage": state.get_stage()})
+        _pub("stage_changed", {"new_stage": state.get_stage()})
+    else:
+        _pub("load_failed", {})
+    return ok
+
+func has_save() -> bool:
+    """Verifica si existe un guardado en disco."""
+    return PersistenceManager.save_exists()
+
+func delete_save() -> bool:
+    """Elimina el guardado (nueva partida)."""
+    return PersistenceManager.delete_save()
+
+func get_save_info() -> SaveSlot:
+    """Retorna metadatos del guardado para mostrar en la UI."""
+    return PersistenceManager.read_slot_info()
+
+# ============================================================
+# PERSISTENCIA — guardar, cargar y nueva partida
+# ============================================================
+
+func save_game() -> bool:
+	# Guarda el progreso actual al disco.
+	# Llamar cada vez que el jugador obtiene una pista o cambia de etapa.
+	var ok := PersistenceManager.save_game(state)
+	if ok:
+		_pub("game_saved", {"stage": state.get_stage()})
+	else:
+		_pub("error_occurred", {"message": "No se pudo guardar la partida.", "source": "persistence"})
+	return ok
+
+func load_game() -> bool:
+	# Carga el progreso guardado y lo aplica al estado actual.
+	# Retorna true si habia guardado y se cargo correctamente.
+	var sd := PersistenceManager.load_game()
+	if sd == null:
+		return false
+	PersistenceManager.apply_to_state(sd, state)
+	_pub("game_loaded", {"stage": state.get_stage()})
+	_pub("stage_changed", {"new_stage": state.get_stage()})
+	return true
+
+func new_game() -> void:
+	# Borra el guardado y reinicia el estado desde cero.
+	PersistenceManager.delete_save()
+	state = GameState.new()
+	_pub("new_game", {})
+	_pub("stage_changed", {"new_stage": STAGE_LOCKED})
+
+func has_saved_game() -> bool:
+	return PersistenceManager.has_save()
+
+# ============================================================
+# GESTION DE JUGADOR ACTIVO
+# El GameController recuerda que jugador esta en sesion.
+# ============================================================
+
+var _active_player: String = ""   # username del jugador activo
+
+func set_active_player(username: String) -> bool:
+	# Establece el jugador activo. Retorna false si no existe el perfil.
+	if not ProfileManager.profile_exists(username):
+		var msg := "El jugador '%s' no existe." % username
+		state.set_error(msg)
+		_pub("error_occurred", {"message": msg, "source": "profile"})
+		return false
+	_active_player = username.strip_edges().to_lower()
+	return true
+
+func get_active_player() -> String:
+	return _active_player
+
+func has_active_player() -> bool:
+	return _active_player != ""
+
+# ============================================================
+# GUARDAR PARTIDA DEL JUGADOR ACTIVO
+# ============================================================
+func save_game() -> bool:
+	if not has_active_player():
+		var msg := "No hay jugador activo."
+		state.set_error(msg)
+		_pub("error_occurred", {"message": msg, "source": "persistence"})
+		return false
+	var ok := ProfileManager.save_player_game(_active_player, state)
+	if ok:
+		_pub("game_saved", {"player": _active_player, "stage": state.get_stage()})
+	else:
+		_pub("error_occurred", {"message": "No se pudo guardar.", "source": "persistence"})
+	return ok
+
+# ============================================================
+# CARGAR PARTIDA DEL JUGADOR ACTIVO
+# ============================================================
+func load_game() -> bool:
+	if not has_active_player():
+		return false
+	var sd := ProfileManager.load_player_game(_active_player)
+	if sd == null:
+		return false
+	PersistenceManager.apply_to_state(sd, state)
+	_pub("game_loaded", {"player": _active_player, "stage": state.get_stage()})
+	_pub("stage_changed", {"new_stage": state.get_stage()})
+	return true
+
+# ============================================================
+# NUEVA PARTIDA PARA EL JUGADOR ACTIVO
+# ============================================================
+func new_game() -> void:
+	if has_active_player():
+		ProfileManager.delete_player_save(_active_player)
+	state = GameState.new()
+	_pub("new_game", {"player": _active_player})
+	_pub("stage_changed", {"new_stage": STAGE_LOCKED})
+
+# ============================================================
+# VERIFICAR SI EL JUGADOR ACTIVO TIENE GUARDADO
+# ============================================================
+func has_saved_game() -> bool:
+	if not has_active_player():
+		return false
+	return ProfileManager.player_has_save(_active_player)
